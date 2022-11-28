@@ -31,11 +31,11 @@ async function run(){
         });
 
         app.get('/categories/:id', async(req, res) =>{
-            const queryNumber = req.params.id;
+            const queryNumber = req.params.id
             const query = {};
             const cursor = productsCollection.find(query);
             const result = await cursor.toArray();
-            let productList = result.filter((a) => parseFloat(a.Category_id) === parseFloat(queryNumber))
+            let productList = result.filter((x) => parseFloat(x.Category_id) === parseFloat(queryNumber))
             res.send(productList);
         });
 
