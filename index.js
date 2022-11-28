@@ -21,13 +21,23 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
 async function run(){
     try{
         const categoriesCollection = client.db('categoryProduct').collection('categories');
+        const productsCollection = client.db('categoryProduct').collection('products');
 
         app.get('/categories', async(req, res)=>{
             const query= {};
             const cursor = categoriesCollection.find(query);
             const result = await cursor.toArray();
             res.send(result);
-        })
+        });
+
+        app.get('/categories/:id', async(req, res) =>{
+            const queryNumber = req.params.id;
+            const query = {};
+            const cursor = productsCollection.find(query);
+            const result = await cursor.toArray();
+            let productList = result.filter((a) => parseFloat(a.Category_id) === parseFloat(queryNumber))
+            res.send(productList);
+        });
 
     }
     finally{
