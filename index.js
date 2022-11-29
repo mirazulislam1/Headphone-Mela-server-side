@@ -22,6 +22,7 @@ async function run(){
     try{
         const categoriesCollection = client.db('categoryProduct').collection('categories');
         const productsCollection = client.db('categoryProduct').collection('products');
+        const bookingsCollection = client.db('categoryProduct').collection('bookings');
 
         app.get('/categories', async(req, res)=>{
             const query= {};
@@ -38,6 +39,12 @@ async function run(){
             let productList = result.filter((x) => parseFloat(x.Category_id) === parseFloat(queryNumber))
             res.send(productList);
         });
+
+        app.post('/bookings', async(req, res) =>{
+            const bookings = req.body;
+            const result = await bookingsCollection.insertOne(bookings);
+            res.send(result);
+        })
 
     }
     finally{
