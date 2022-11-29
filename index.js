@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const jwt = require('jsonwebtoken')
 const { MongoClient, ServerApiVersion } = require('mongodb');
 const port = process.env.PORT || 5000;
 require('dotenv').config()
@@ -18,21 +19,21 @@ console.log(uri)
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
 
 // crud operation
-async function run(){
-    try{
+async function run() {
+    try {
         const categoriesCollection = client.db('categoryProduct').collection('categories');
         const productsCollection = client.db('categoryProduct').collection('products');
         const bookingsCollection = client.db('categoryProduct').collection('bookings');
         const usersCollection = client.db('categoryProduct').collection('users');
 
-        app.get('/categories', async(req, res)=>{
-            const query= {};
+        app.get('/categories', async (req, res) => {
+            const query = {};
             const cursor = categoriesCollection.find(query);
             const result = await cursor.toArray();
             res.send(result);
         });
 
-        app.get('/categories/:id', async(req, res) =>{
+        app.get('/categories/:id', async (req, res) => {
             const queryNumber = req.params.id
             const query = {};
             const cursor = productsCollection.find(query);
@@ -41,38 +42,47 @@ async function run(){
             res.send(productList);
         });
 
-        app.get('/bookings', async(req,res) =>{
+        app.get('/bookings',  async (req, res) => {
             const email = req.query.email;
-            const query = {email: email};
+            const query = { email: email };
             const bookings = await bookingsCollection.find(query).toArray();
             res.send(bookings);
         })
 
-        app.post('/bookings', async(req, res) =>{
+        app.post('/bookings', async (req, res) => {
             const bookings = req.body;
             const result = await bookingsCollection.insertOne(bookings);
             res.send(result);
         })
 
-        app.post('/users', async(req, res)=>{
+
+        app.post('/users', async (req, res) => {
             const user = req.body;
             const result = await usersCollection.insertOne(user);
             res.send(result);
 
         })
 
+        app.get('/users', async(req, res) =>{
+            const query = {};
+            const users= await usersCollection.find(query).toArray();
+            res.send(users);
+        })
+
+       
+
     }
-    finally{
+    finally {
 
     }
 
 }
 run().catch(error => console.error(error))
 
-app.get('/', async(req, res)=>{
+app.get('/', async (req, res) => {
     res.send('Resell server side is running ')
 })
 
-app.listen(port, ()=>{
+app.listen(port, () => {
     console.log(`resell server running on ${port}`)
 })
